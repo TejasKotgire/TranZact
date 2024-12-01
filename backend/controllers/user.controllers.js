@@ -15,6 +15,12 @@ const signinBody = zod.object({
     password : zod.string()
 })
 
+const updateBody = zod.object({
+    password : zod.string().min(3),
+    firstName : zod.string(),
+    lastName : zod.string()
+})
+
 exports.signup = async(req, res)=>{
     const { success } = signupBody.safeParse(req.body);
     if(!success){
@@ -75,5 +81,29 @@ exports.signin = async(req, res)=> {
     }
     res.status(411).json({
         message : "Error while logging in"
+    })
+}
+
+exports.update = async(req, res)=> {
+    const { success } = updateBody.safeParse(req.body);
+    if(!success) {
+        return res.status(411).json({
+            message : "Error while updating information"
+        })
+    }
+    const user = await User.findOne({
+        _id : req.userId
+    })
+    if(!user) {
+        return res.status(411).json({
+            message : "Error while updating information"
+        })
+    }
+    user.password = req.body.password;
+    user.firstName = req.body.firstName;
+    user.lastName = req.body.lastName;
+    user.save();
+    res.status(200).json({
+        message: "Updated successfully"
     })
 }

@@ -1,4 +1,5 @@
 const User = require('../models/User.model');
+const Account = require('../models/Account.model')
 const jwt = require('jsonwebtoken');
 const zod = require('zod')
 const { JWT_SECRET } = require('../config')
@@ -16,9 +17,9 @@ const signinBody = zod.object({
 })
 
 const updateBody = zod.object({
-    password : zod.string().min(3),
-    firstName : zod.string(),
-    lastName : zod.string()
+    password : zod.string().min(3).optional(),
+    firstName : zod.string().optional(),
+    lastName : zod.string().optional()
 })
 
 exports.signup = async(req, res)=>{
@@ -46,6 +47,11 @@ exports.signup = async(req, res)=>{
         lastName : req.body.lastName
     })
     const userId = user._id;
+
+    await Account.create({
+        userId,
+        balance : 1 + Math.random() * 10000
+    })
 
     const token = jwt.sign({
         userId
@@ -91,19 +97,30 @@ exports.update = async(req, res)=> {
             message : "Error while updating information"
         })
     }
-    const user = await User.findOne({
-        _id : req.userId
-    })
-    if(!user) {
-        return res.status(411).json({
-            message : "Error while updating information"
-        })
-    }
-    user.password = req.body.password;
-    user.firstName = req.body.firstName;
-    user.lastName = req.body.lastName;
-    user.save();
+    await User.updateOne({ _id: req.userId }, req.body);
     res.status(200).json({
         message: "Updated successfully"
+    })
+}
+
+exports.bulk = async(req, res) =>{
+    const filter = req.query.filter || "";
+    const users = await User.find({
+        $or: [{
+            firstName: {
+                "$regex": filter
+            }
+        }, {
+            lastName: {
+                "$regex": filter
+            }
+        }]
+    })
+    res.json({
+        users : users.map(user=>({
+            firstName : user.firstName,
+            lastName : user.lastName,
+            _id : user._id
+        }))
     })
 }

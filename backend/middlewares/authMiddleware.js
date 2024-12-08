@@ -12,11 +12,15 @@ const authMiddleware = async (req, res, next) => {
     const token = authHeader.split(' ')[1];
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
-        req.userId = decoded.userId;
-        next();
+        if(decoded.userId){
+            req.userId = decoded.userId;
+            next();
+        }
     } catch (error) {
         console.log("Error at authMiddleware " + error)
-        return res.status(403).json({});
+        return res.status(403).json({
+            message : "User not verified"
+        });
     }
 }
 

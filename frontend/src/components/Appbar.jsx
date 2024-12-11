@@ -1,4 +1,8 @@
+import { useNavigate } from "react-router-dom";
+import Button from "./Button";
+
 const Appbar = () => {
+    const navigate = useNavigate()
     return <div className="shadow h-14 flex justify-between">
         <div className="flex flex-col justify-center h-full ml-4">
             PayTM App
@@ -12,6 +16,10 @@ const Appbar = () => {
                     U
                 </div>
             </div>
+            <Button label={"Logout"} onClick={e=> {
+                localStorage.removeItem('token');
+                navigate('/signin')
+            }}/> 
         </div>
     </div>
 }

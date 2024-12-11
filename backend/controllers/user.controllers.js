@@ -50,7 +50,7 @@ exports.signup = async(req, res)=>{
 
     await Account.create({
         userId,
-        balance : 1 + Math.random() * 10000
+        balance : 10000
     })
 
     const token = jwt.sign({
@@ -85,9 +85,14 @@ exports.signin = async(req, res)=> {
         })
         return;
     }
-    res.status(411).json({
-        message : "Error while logging in"
-    })
+    if(!user){
+        res.status(411).json({
+            message : "Incorrect username or Password"
+        })
+    }
+    // res.status(411).json({
+    //     message : "Error while logging in"
+    // })
 }
 
 exports.update = async(req, res)=> {

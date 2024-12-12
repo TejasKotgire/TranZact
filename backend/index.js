@@ -9,7 +9,7 @@ const app = express()
 dotenv.config();
 connectDB()
 app.use(cors({
-    origin: 'https://tran-zact.vercel.app',
+    origin: process.env.FRONTEND_URL,
     methods: ['GET', 'POST', 'PUT', 'DELETE'], 
     credentials: true                            
   }));

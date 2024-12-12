@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 const SendMoney = () => {
+    const apiUrl = import.meta.env.VITE_API_URL;
     const navigate = useNavigate()
     const [searchParams] = useSearchParams();
     const id = searchParams.get("id");
@@ -11,7 +12,7 @@ const SendMoney = () => {
     const [amount, setAmount] = useState();
 
     async function transferMoney(){
-        const reponse = await axios.post('http://localhost:3000/api/v1/account/transfer', {
+        const reponse = await axios.post(`${apiUrl}/account/transfer`, {
             to : id,
             amount
         },{

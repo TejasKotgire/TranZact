@@ -5,9 +5,10 @@ import Users from '../components/Users'
 import axios from 'axios'
 
 const Dashboard = () => {
+  const apiUrl = import.meta.env.VITE_API_URL;
   const [balance, setBalance] = useState("")
   async function getBalance(){
-    const reponse = await axios.get('http://localhost:3000/api/v1/account/balance', {
+    const reponse = await axios.get(`${apiUrl}/account/balance`, {
       headers : {
         Authorization : `Bearer ${localStorage.getItem('token')}`
       }

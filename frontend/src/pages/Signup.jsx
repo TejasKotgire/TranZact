@@ -5,17 +5,22 @@ import Heading from "../components/Heading"
 import InputBox from "../components/InputBox"
 import SubHeading from "../components/SubHeading"
 import axios from 'axios'
+import { useNavigate } from "react-router-dom"
 
 const Signup = () => {
-
+  const apiUrl = import.meta.env.VITE_API_URL;
+  const navigate = useNavigate()
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   async function signup(){
-    const response = await axios.post('http://localhost:3000/api/v1/user/signup', {firstName, lastName, username, password});
+    const response = await axios.post(`${apiUrl}/user/signup`, {firstName, lastName, username, password});
     localStorage.setItem("token", response.data.token);
+    if (response.status == 200){
+      navigate('/signin')
+    }
   }
 
     return <div className="bg-slate-300 h-screen flex justify-center">

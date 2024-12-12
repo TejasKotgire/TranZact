@@ -2,7 +2,7 @@ const User = require('../models/User.model');
 const Account = require('../models/Account.model')
 const jwt = require('jsonwebtoken');
 const zod = require('zod')
-const { JWT_SECRET } = require('../config')
+// const { JWT_SECRET } = require('../config')
 
 const signupBody = zod.object({
     username : zod.string().email(),
@@ -55,7 +55,7 @@ exports.signup = async(req, res)=>{
 
     const token = jwt.sign({
         userId
-    }, JWT_SECRET);
+    }, process.env.JWT_SECRET);
     res.status(200).json({
         message : "User created successfully",
         token
@@ -79,7 +79,7 @@ exports.signin = async(req, res)=> {
         const userId = user._id;
         const token = jwt.sign({
             userId
-        }, JWT_SECRET)
+        }, process.env.JWT_SECRET)
         res.status(200).json({
             token
         })

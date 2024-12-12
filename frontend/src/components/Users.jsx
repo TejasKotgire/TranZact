@@ -8,7 +8,8 @@ const Users = () => {
     const [filter, setFilter] = useState("")
 
     async function bulk (){
-        const response = await axios.get(`http://localhost:3000/api/v1/user/bulk?filter=${filter}`,{
+        const apiUrl = import.meta.env.VITE_API_URL;
+        const response = await axios.get(`${apiUrl}/user/bulk?filter=${filter}`,{
             headers : {
                 authorization : `Bearer ${localStorage.getItem('token')}`
             }
